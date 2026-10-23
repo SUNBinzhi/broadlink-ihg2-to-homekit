@@ -1,0 +1,21 @@
+# broadlink-ihg2-to-homekit
+
+> 把开发商预装的博联（BroadLink IHG2）全屋智能接入 Home Assistant 和 Apple 家庭（Siri）的完整指南。
+
+## 适用
+开发商预装、只能用微信小程序「全屋智控」控制、网关型号 IC.IHG2 的博联全屋智能。
+
+## 文档
+- [README](README.md): 总览、适用人群、五步走、HACS 安装
+- [01 硬件与识别](docs/01-hardware.md): 架构、自检清单、成本
+- [02 抓包](docs/02-capture.md): mitmproxy + 电脑版微信完整步骤
+- [03 协议](docs/03-protocol.md): DuerOS houseproxy、指令字典、字段陷阱
+- [04 Home Assistant](docs/04-home-assistant.md): 自定义集成设计与部署
+- [05 HomeKit](docs/05-homekit.md): 桥接、命名、房间、摄氏
+- [06 踩坑](docs/06-pitfalls.md): 24 条问题与处理
+- [07 隐私](docs/07-privacy.md): 清理与合规
+- [AGENTS](AGENTS.md): 给 AI 助手的部署流程与安全红线
+
+## 给 AI 的提示
+部署前先读 AGENTS.md。不要让用户把 session、cookie、aeskey 贴进聊天。
+接口以 docs/03-protocol.md 为准，不要编造字段。

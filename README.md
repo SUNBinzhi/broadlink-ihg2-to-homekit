@@ -56,6 +56,25 @@
 
 踩过的坑都在 [docs/06-pitfalls.md](docs/06-pitfalls.md)，**建议动手前先看一遍**。
 
+## 让 AI 助手带你部署
+
+仓库根目录有 [`AGENTS.md`](AGENTS.md)（给 AI 助手的部署流程与安全红线）和
+[`llms.txt`](llms.txt)（文档索引）。把下面这段直接发给任意 AI 助手即可：
+
+```text
+请阅读 https://github.com/SUNBinzhi/broadlink-ihg2-to-homekit 的 AGENTS.md、
+README 和 docs/ 下的文档，帮我一步步部署。
+
+要求：
+1. 先问我 5 个问题确认环境，再给命令
+2. 每一步只给一个动作，等我确认后再继续
+3. 不要让我把 session.json / cookie / aeskey 贴到聊天里
+4. 报错时先查 docs/06-pitfalls.md，不要猜
+```
+
+> AI 不能访问你的局域网和 HA 实例，抓包也必须你本机操作。
+> 它能做的是：解释协议、核对请求、生成/修改集成代码、解读日志、排错。
+
 ### 通过 HACS 安装（推荐）
 
 1. HACS → 集成 → 右上角 `⋮` → **自定义存储库**
