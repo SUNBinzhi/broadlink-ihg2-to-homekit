@@ -1,3 +1,9 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2024.4%2B-41BDF5.svg)](https://www.home-assistant.io/)
+[![HomeKit](https://img.shields.io/badge/Apple-HomeKit-black.svg)](https://www.apple.com/home-app/)
+[![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz/)
+[![GitHub stars](https://img.shields.io/github/stars/SUNBinzhi/broadlink-ihg2-to-homekit?style=social)](https://github.com/SUNBinzhi/broadlink-ihg2-to-homekit/stargazers)
+
 # 开发商预装博联（BroadLink / IHG2）全屋智能 → Home Assistant → Apple 家庭
 
 > 把「只能通过微信小程序控制」的开发商预装博联全屋智能，接入 Home Assistant，再桥接到 Apple 家庭，实现 Siri 语音控制与自动化。
@@ -88,3 +94,25 @@
 ## License
 
 MIT
+
+---
+
+## English summary
+
+A practical, end-to-end guide for integrating a **developer-installed BroadLink (IHG2) whole-home system** — which normally can only be controlled by a WeChat mini program — into **Home Assistant** and **Apple Home / HomeKit (Siri)**.
+
+The mini program talks to BroadLink's cloud through a **DuerOS ConnectedHome houseproxy** endpoint. By capturing that traffic (mitmproxy on desktop WeChat) and replaying the same requests, you can build a custom Home Assistant integration without touching firmware or wiring.
+
+What's inside:
+
+- How to identify the same hardware (`IC.IHG2` gateway, "全屋智控" mini program)
+- Step-by-step HTTPS capture on a desktop (no phone needed)
+- The DuerOS protocol: headers, device cookie, request/response shapes
+- Command dictionary for lights, climate, covers and state queries
+- A reference Home Assistant custom integration (multi-room, dimming, color temp)
+- HomeKit Bridge setup, naming, room assignment and the Celsius/Fahrenheit pitfall
+- A 24-item pitfalls list and a privacy/cleanup checklist
+
+**Keywords:** BroadLink, IHG2, CloudThink, home assistant, homekit, siri, custom integration, hacs, smart home, developer pre-installed, 精装房, 全屋智能, 博联, 微信小程序.
+
+> Use only on devices you own. Private protocol, may change at any time.

@@ -1,0 +1,6 @@
+{
+  "name": "CloudThink BroadLink (IHG2)",
+  "render_readme": true,
+  "homeassistant": "2024.4.0",
+  "zip_release": false
+}
