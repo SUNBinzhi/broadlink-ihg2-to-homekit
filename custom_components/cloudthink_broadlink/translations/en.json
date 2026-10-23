@@ -1,0 +1,21 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "全屋智控 · 选择房间",
+        "description": "选择要接入 Home Assistant 的房间。每个房间创建一个集成条目。"
+      },
+      "light": {
+        "title": "全屋智控 · 选择灯光",
+        "description": "选择 {room} 用作总开关的灯光设备；默认自动挑选虚拟灯组。"
+      }
+    },
+    "error": {
+      "missing_files": "找不到 session.json 或 devices.json"
+    },
+    "abort": {
+      "already_configured": "该房间已经接入",
+      "missing_files": "找不到 devices.json"
+    }
+  }
+}

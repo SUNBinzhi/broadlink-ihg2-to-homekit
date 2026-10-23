@@ -1,0 +1,34 @@
+[
+  {
+    "friendlyName": "示例灯",
+    "roomName": "客厅",
+    "applianceTypes": ["LIGHT"],
+    "applianceId": "00000000000000000000AAAAAAAAAAAA",
+    "modelName": "example",
+    "isReachable": true,
+    "additionalApplianceDetails": {
+      "did": "00000000000000000000AAAAAAAAAAAA",
+      "pid": "00000000000000000000000000000000",
+      "devname": "示例灯",
+      "applianceTypes": "[\"LIGHT\"]",
+      "aeskeyToken": "<REDACTED>",
+      "version": "v2"
+    }
+  },
+  {
+    "friendlyName": "示例空调",
+    "roomName": "主卧",
+    "applianceTypes": ["AIR_CONDITION"],
+    "applianceId": "00000000000000000000BBBBBBBBBBBB",
+    "modelName": "example",
+    "isReachable": true,
+    "additionalApplianceDetails": {
+      "did": "00000000000000000000BBBBBBBBBBBB",
+      "pid": "00000000000000000000000000000000",
+      "devname": "示例空调",
+      "applianceTypes": "[\"AIR_CONDITION\"]",
+      "aeskeyToken": "<REDACTED>",
+      "version": "v2"
+    }
+  }
+]

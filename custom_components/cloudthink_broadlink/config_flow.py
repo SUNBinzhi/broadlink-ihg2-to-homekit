@@ -1,0 +1,74 @@
+"""Add one integration entry per room."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import voluptuous as vol
+from homeassistant import config_entries
+
+from .const import DATA_DIR, DOMAIN
+
+AUTO = "自动"
+
+
+async def _load_devices(hass) -> list[dict]:
+    path = Path(hass.config.path(DATA_DIR)) / "devices.json"
+
+    def read() -> list[dict]:
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return []
+
+    return await hass.async_add_executor_job(read)
+
+
+class CloudThinkConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    VERSION = 1
+
+    def __init__(self) -> None:
+        self._room: str | None = None
+
+    async def async_step_user(self, user_input: dict | None = None):
+        devices = await _load_devices(self.hass)
+        rooms = sorted({d.get("roomName") for d in devices if d.get("roomName")})
+        if not rooms:
+            return self.async_abort(reason="missing_files")
+
+        if user_input is not None:
+            self._room = user_input["room"]
+            return await self.async_step_light()
+
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema({vol.Required("room", default=rooms[0]): vol.In(rooms)}),
+        )
+
+    async def async_step_light(self, user_input: dict | None = None):
+        devices = await _load_devices(self.hass)
+        room = self._room or ""
+        names = sorted(
+            {
+                d.get("friendlyName")
+                for d in devices
+                if d.get("roomName") == room
+                and "LIGHT" in (d.get("applianceTypes") or [])
+                and d.get("friendlyName")
+            }
+        )
+
+        if user_input is not None:
+            await self.async_set_unique_id(f"room_{room}")
+            self._abort_if_unique_id_configured()
+            return self.async_create_entry(
+                title=f"全屋智控 · {room}",
+                data={"room": room, "light": user_input.get("light", AUTO)},
+            )
+
+        return self.async_show_form(
+            step_id="light",
+            data_schema=vol.Schema({vol.Optional("light", default=AUTO): vol.In([AUTO] + names)}),
+            description_placeholders={"room": room},
+        )

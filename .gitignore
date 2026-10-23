@@ -1,0 +1,18 @@
+# 绝对不要提交这些
+session.json
+devices.json
+*.mitm
+flows.mitm
+*.har
+*.pcap
+*.log
+
+# 抓包工具
+.mitm/
+mitmproxy-ca*.pem
+mitmproxy-ca*.cer
+
+# 系统
+.DS_Store
+__pycache__/
+*.pyc

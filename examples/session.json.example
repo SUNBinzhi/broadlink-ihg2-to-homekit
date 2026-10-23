@@ -1,0 +1,13 @@
+{
+  "url": "https://app-service-chn-xxxxxxxx.ibroadlink.com/appfront/v1/houseproxy/v1/dueros",
+  "headers": {
+    "loginsession": "<YOUR_LOGIN_SESSION>",
+    "userid": "<YOUR_USER_ID>",
+    "familyid": "<YOUR_FAMILY_ID>",
+    "licenseid": "<YOUR_LICENSE_ID>",
+    "activationcode": "<FIXED_ACTIVATION_CODE>",
+    "companyid": "<VENDOR_ID>",
+    "Content-Type": "application/json"
+  },
+  "cookie": "<BASE64_DEVICE_COOKIE>"
+}
