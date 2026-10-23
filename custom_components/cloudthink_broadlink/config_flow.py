@@ -7,6 +7,7 @@ from pathlib import Path
 
 import voluptuous as vol
 from homeassistant import config_entries
+from homeassistant.helpers import config_validation as cv
 
 from .const import DATA_DIR, DOMAIN
 
@@ -70,5 +71,51 @@ class CloudThinkConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="light",
             data_schema=vol.Schema({vol.Optional("light", default=AUTO): vol.In([AUTO] + names)}),
+            description_placeholders={"room": room},
+        )
+
+    @staticmethod
+    def async_get_options_flow(config_entry):
+        return CloudThinkOptionsFlow()
+
+
+class CloudThinkOptionsFlow(config_entries.OptionsFlow):
+    """Let a room add extra lights next to its virtual group."""
+
+    async def async_step_init(self, user_input: dict | None = None):
+        entry = self.config_entry
+        devices = await _load_devices(self.hass)
+        room = entry.data.get("room", "")
+        names = sorted(
+            {
+                d.get("friendlyName")
+                for d in devices
+                if d.get("roomName") == room
+                and "LIGHT" in (d.get("applianceTypes") or [])
+                and d.get("friendlyName")
+            }
+        )
+        current_light = entry.options.get("light", entry.data.get("light", AUTO))
+        current_extras = entry.options.get("extra_lights", entry.data.get("extra_lights") or [])
+
+        if user_input is not None:
+            return self.async_create_entry(
+                title="",
+                data={
+                    "light": user_input.get("light", AUTO),
+                    "extra_lights": user_input.get("extra_lights", []),
+                },
+            )
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema(
+                {
+                    vol.Optional("light", default=current_light): vol.In([AUTO] + names),
+                    vol.Optional("extra_lights", default=current_extras): cv.multi_select(
+                        {name: name for name in names}
+                    ),
+                }
+            ),
             description_placeholders={"room": room},
         )

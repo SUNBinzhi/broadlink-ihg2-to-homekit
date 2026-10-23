@@ -21,11 +21,18 @@ BACKGROUND_LIGHTS = {"defaultbglight", "面板背景灯", "厨房复合开关背
 CONTROL_TYPES = {"AIR_CONDITION", "CURTAIN", "CURT_SIMP", "AIR_FRESHER", "ENVIRONMENT_SENSOR"}
 
 
-def pick_lights(devices: list[dict], room: str, preferred: str | None = None) -> list[dict]:
+def pick_lights(
+    devices: list[dict],
+    room: str,
+    preferred: str | None = None,
+    extras: list[str] | None = None,
+) -> list[dict]:
     """Pick light entities for a room.
 
     Preference order: explicit choice, the room's virtual group, any virtual
     group, then every non-background light in the room (rooms without a group).
+    Extra lights named in the entry options are appended on top of the group,
+    so a room keeps its group switch and gains the lamps the group misses.
     """
     candidates = [
         d
@@ -34,24 +41,33 @@ def pick_lights(devices: list[dict], room: str, preferred: str | None = None) ->
         and "LIGHT" in (d.get("applianceTypes") or [])
         and d.get("friendlyName") not in BACKGROUND_LIGHTS
     ]
+    picked: list[dict] = []
     if preferred and preferred not in ("", "自动"):
-        for d in candidates:
-            if d.get("friendlyName") == preferred:
-                return [d]
-    for d in candidates:
-        if d.get("friendlyName") == f"{room}的灯":
-            return [d]
-    if room == "客厅":
-        for d in candidates:
-            if d.get("friendlyName") == "会客组":
-                return [d]
-    for d in candidates:
-        if (d.get("friendlyName") or "").endswith("组"):
-            return [d]
-    return candidates
+        picked = [d for d in candidates if d.get("friendlyName") == preferred][:1]
+    if not picked:
+        picked = [d for d in candidates if d.get("friendlyName") == f"{room}的灯"][:1]
+    if not picked and room == "客厅":
+        picked = [d for d in candidates if d.get("friendlyName") == "会客组"][:1]
+    if not picked:
+        picked = [d for d in candidates if (d.get("friendlyName") or "").endswith("组")][:1]
+    if not picked:
+        picked = list(candidates)
+    if extras:
+        seen = {d.get("applianceId") for d in picked}
+        for name in extras:
+            for d in candidates:
+                if d.get("friendlyName") == name and d.get("applianceId") not in seen:
+                    picked.append(d)
+                    seen.add(d.get("applianceId"))
+    return picked
 
 
-def selected_devices(all_devices: list[dict], room: str, light_name: str | None = None) -> list[dict]:
+def selected_devices(
+    all_devices: list[dict],
+    room: str,
+    light_name: str | None = None,
+    extra_lights: list[str] | None = None,
+) -> list[dict]:
     """Expose one room: climate, covers, fresh air, sensors and one light group."""
     selected: list[dict] = []
     for device in all_devices:
@@ -64,7 +80,7 @@ def selected_devices(all_devices: list[dict], room: str, light_name: str | None 
             continue
         if CONTROL_TYPES.intersection(types):
             selected.append(device)
-    lights = pick_lights(all_devices, room, light_name)
+    lights = pick_lights(all_devices, room, light_name, extra_lights)
     for light in lights:
         rename = f"{room}的灯" if len(lights) == 1 else (light.get("friendlyName") or "")
         selected.append({**light, "friendlyName": rename} if rename else light)
@@ -128,7 +144,8 @@ class CloudThinkCoordinator(DataUpdateCoordinator[dict[str, dict]]):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     room = entry.data.get("room", DEFAULT_ROOM)
-    light_name = entry.data.get("light")
+    light_name = entry.options.get("light", entry.data.get("light"))
+    extra_lights = entry.options.get("extra_lights") or entry.data.get("extra_lights") or []
     data_path = Path(hass.config.path(DATA_DIR))
     session_path = data_path / "session.json"
     devices_path = data_path / "devices.json"
@@ -136,7 +153,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         all_devices = await hass.async_add_executor_job(
             lambda: json.loads(devices_path.read_text(encoding="utf-8"))
         )
-        devices = selected_devices(all_devices, room, light_name)
+        devices = selected_devices(all_devices, room, light_name, extra_lights)
         if not devices or not session_path.is_file():
             raise ValueError("Missing devices or session")
     except (OSError, ValueError, json.JSONDecodeError) as exc:
