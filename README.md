@@ -56,6 +56,16 @@
 
 踩过的坑都在 [docs/06-pitfalls.md](docs/06-pitfalls.md)，**建议动手前先看一遍**。
 
+### 通过 HACS 安装（推荐）
+
+1. HACS → 集成 → 右上角 `⋮` → **自定义存储库**
+2. 填入 `https://github.com/SUNBinzhi/broadlink-ihg2-to-homekit`，类别选 **Integration**
+3. 搜索 `CloudThink BroadLink` → 下载
+4. 重启 Home Assistant
+5. 按 [docs/04-home-assistant.md](docs/04-home-assistant.md) 放入 `session.json` 和 `devices.json`
+
+> HACS 只负责装代码，`session.json` / `devices.json` 需要你自己放。
+
 ## 仓库结构
 
 ```
