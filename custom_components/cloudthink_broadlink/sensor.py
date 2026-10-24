@@ -24,6 +24,11 @@ async def async_setup_entry(hass, entry, async_add_entities):
         if "ENVIRONMENT_SENSOR" in (item.get("applianceTypes") or [])
         for key in SENSORS
     )
+    async_add_entities(
+        CloudThinkSensor(coordinator, item, "temperature")
+        for item in coordinator.devices
+        if "DEHUMIDIFIER" in (item.get("applianceTypes") or [])
+    )
 
 
 class CloudThinkSensor(CloudThinkEntity, SensorEntity):

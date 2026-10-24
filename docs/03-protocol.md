@@ -140,6 +140,7 @@ UI 应做「乐观更新」，不要等云端回执。
 | `ENVIRONMENT_SENSOR` | 环境监测 | 只读 |
 | `GATEWAY` | 网关 | 只读 |
 | `SMART_SCREEN` | 智慧屏 | 只读 |
+| `DEHUMIDIFIER` | 除湿机 | 开关；湿度/温度/目标湿度只读 |
 
 ## 8. 命名规律
 

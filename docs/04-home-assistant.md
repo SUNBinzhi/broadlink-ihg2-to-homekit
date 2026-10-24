@@ -24,6 +24,7 @@ custom_components/cloudthink_broadlink/
 ├── cover.py           # 窗帘
 ├── switch.py          # 新风等
 ├── sensor.py          # 环境传感器
+├── humidifier.py      # 除湿机（开关 + 当前湿度）
 ├── manifest.json
 ├── strings.json
 └── translations/

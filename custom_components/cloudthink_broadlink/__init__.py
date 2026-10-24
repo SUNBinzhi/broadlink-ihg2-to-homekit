@@ -18,7 +18,14 @@ from .const import DATA_DIR, DEFAULT_ROOM, DOMAIN, PLATFORMS
 _LOGGER = logging.getLogger(__name__)
 
 BACKGROUND_LIGHTS = {"defaultbglight", "面板背景灯", "厨房复合开关背景灯"}
-CONTROL_TYPES = {"AIR_CONDITION", "CURTAIN", "CURT_SIMP", "AIR_FRESHER", "ENVIRONMENT_SENSOR"}
+CONTROL_TYPES = {
+    "AIR_CONDITION",
+    "CURTAIN",
+    "CURT_SIMP",
+    "AIR_FRESHER",
+    "ENVIRONMENT_SENSOR",
+    "DEHUMIDIFIER",
+}
 
 
 def pick_lights(

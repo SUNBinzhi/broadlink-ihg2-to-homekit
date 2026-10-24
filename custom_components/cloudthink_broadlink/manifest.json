@@ -1,7 +1,7 @@
 {
   "domain": "cloudthink_broadlink",
   "name": "CloudThink BroadLink",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "codeowners": [],
   "config_flow": true,
   "iot_class": "cloud_polling"
