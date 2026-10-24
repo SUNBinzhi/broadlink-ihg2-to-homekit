@@ -85,6 +85,8 @@ Content-Type: application/json
 
 模式取值：`COOL` 制冷、`HEAT` 制热、`FAN` 送风、`DEHUMIDIFICATION` 除湿、`AUTO` 自动。
 
+风速取值：`1` 自动、`2` 低、`3` 中、`4` 高（与微信小程序显示一致）。
+
 ### 窗帘 / 窗纱
 
 | 功能 | header.name | payload 附加 |

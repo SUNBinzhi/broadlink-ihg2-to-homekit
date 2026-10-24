@@ -17,6 +17,10 @@ _TO_CLOUD = {
 }
 _FROM_CLOUD = {value: key for key, value in _TO_CLOUD.items()}
 
+# 云端风速档位：1=自动 2=低 3=中 4=高（与微信小程序显示一致）
+_FAN_TO_CLOUD = {"自动": 1, "低": 2, "中": 3, "高": 4}
+_FAN_FROM_CLOUD = {value: key for key, value in _FAN_TO_CLOUD.items()}
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
@@ -36,7 +40,7 @@ class CloudThinkClimate(CloudThinkEntity, ClimateEntity):
         | ClimateEntityFeature.TURN_OFF
     )
     _attr_hvac_modes = [HVACMode.OFF, HVACMode.COOL, HVACMode.HEAT, HVACMode.FAN_ONLY, HVACMode.DRY, HVACMode.AUTO]
-    _attr_fan_modes = ["1", "2", "3", "4"]
+    _attr_fan_modes = ["自动", "低", "中", "高"]
     _attr_min_temp = 16
     _attr_max_temp = 30
     _attr_target_temperature_step = 1
@@ -58,7 +62,9 @@ class CloudThinkClimate(CloudThinkEntity, ClimateEntity):
     @property
     def fan_mode(self):
         value = self.state_data.get("fanSpeed")
-        return str(value) if value is not None else None
+        if value is None:
+            return None
+        return _FAN_FROM_CLOUD.get(int(value), str(value))
 
     async def async_turn_on(self):
         await self.coordinator.command(self.device, "TurnOnRequest")
@@ -87,8 +93,9 @@ class CloudThinkClimate(CloudThinkEntity, ClimateEntity):
         )
 
     async def async_set_fan_mode(self, fan_mode):
-        speed = int(fan_mode)
-        if speed not in (1, 2, 3, 4):
-            raise ValueError("Fan speed must be 1–4")
-        await self.coordinator.command(self.device, "SetFanSpeedRequest", {"fanSpeed": {"value": speed}})
+        if fan_mode not in _FAN_TO_CLOUD:
+            raise ValueError(f"Unknown fan mode: {fan_mode}")
+        await self.coordinator.command(
+            self.device, "SetFanSpeedRequest", {"fanSpeed": {"value": _FAN_TO_CLOUD[fan_mode]}}
+        )
 
